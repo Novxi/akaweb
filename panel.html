@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3efe6" />
+  <title>Akademia — Müşteri Paneli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body class="panel-body">
+  <!-- HEADER -->
+  <header class="pnl-top">
+    <div class="pnl-top-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3 4 9.5v13L16 29l12-6.5v-13L16 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5 16 17l6-3.5M16 17v6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span>Akademia</span>
+      </a>
+      <div class="pnl-user">
+        <div class="pnl-user-info">
+          <span class="pnl-user-name" id="userName">—</span>
+          <span class="pnl-user-mail" id="userMail">—</span>
+        </div>
+        <span class="pnl-avatar" id="userAvatar">·</span>
+        <button class="pnl-logout" id="logout" title="Çıkış Yap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="pnl-wrap" id="panelMain" hidden>
+    <!-- HOŞ GELDİN -->
+    <div class="pnl-hello">
+      <span class="eyebrow">Müşteri Paneli</span>
+      <h1>Hoş geldiniz, <span id="helloName">—</span></h1>
+      <p id="helloSchool" class="pnl-school"></p>
+    </div>
+
+    <div class="pnl-note" id="flashNote" hidden></div>
+
+    <!-- LİSANS + DURUM -->
+    <section class="pnl-grid-top">
+      <div class="pnl-card license-card">
+        <div class="pc-label">Lisans Anahtarınız</div>
+        <div class="license-key" id="licenseKey">—</div>
+        <button class="pnl-copy" id="copyKey">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span>Kopyala</span>
+        </button>
+        <p class="license-hint">Bu anahtarı uygulamaya girerek lisansınızı etkinleştirin.</p>
+      </div>
+
+      <div class="pnl-card status-card">
+        <div class="status-row">
+          <div>
+            <div class="pc-label">Hesap Durumu</div>
+            <span class="status-badge" id="statusBadge">—</span>
+          </div>
+          <div>
+            <div class="pc-label">Aktif Plan</div>
+            <div class="plan-name" id="planName">—</div>
+          </div>
+        </div>
+        <p class="status-hint" id="statusHint"></p>
+      </div>
+    </section>
+
+    <!-- UYGULAMAYI İNDİR -->
+    <section class="pnl-section" id="downloadSection">
+      <div class="pnl-section-head">
+        <h2>Uygulamayı İndirin</h2>
+        <p id="downloadHint">Bir plan satın aldığınızda indirme bağlantıları burada etkinleşir.</p>
+      </div>
+      <div class="dl-grid is-locked" id="downloadGrid">
+        <a class="dl-card" data-os="macos" rel="noopener" aria-disabled="true" tabindex="-1">
+          <span class="dl-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2 1.6-3 1.7-3.05-1-1.4-2.4-1.6-2.9-1.62-1.25-.13-2.4.73-3 .73-.62 0-1.57-.71-2.58-.69-1.33.02-2.55.77-3.23 1.96-1.38 2.4-.35 5.95 1 7.9.65.96 1.43 2.03 2.45 1.99.98-.04 1.35-.63 2.54-.63 1.18 0 1.52.63 2.56.61 1.06-.02 1.73-.97 2.37-1.93.75-1.1 1.06-2.17 1.07-2.22-.02-.01-2.05-.79-2.07-3.13M14.5 6.1c.54-.66.9-1.57.8-2.48-.78.03-1.72.52-2.28 1.18-.5.58-.94 1.5-.82 2.39.87.06 1.76-.44 2.3-1.09"/></svg></span>
+          <span class="dl-meta"><span class="dl-os">macOS</span><span class="dl-sub">.dmg · Evrensel</span></span>
+          <span class="dl-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg></span>
+        </a>
+        <a class="dl-card" data-os="windows" rel="noopener" aria-disabled="true" tabindex="-1">
+          <span class="dl-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13L10.5 19.6v-7H3v6.9ZM11.5 4.25 21 3v8.5h-9.5v-7.25ZM11.5 19.75 21 21v-8.5h-9.5v7.25Z"/></svg></span>
+          <span class="dl-meta"><span class="dl-os">Windows</span><span class="dl-sub">.exe · 64-bit</span></span>
+          <span class="dl-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg></span>
+        </a>
+        <a class="dl-card" data-os="ios" rel="noopener" aria-disabled="true" tabindex="-1">
+          <span class="dl-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2 1.6-3 1.7-3.05-1-1.4-2.4-1.6-2.9-1.62-1.25-.13-2.4.73-3 .73-.62 0-1.57-.71-2.58-.69-1.33.02-2.55.77-3.23 1.96-1.38 2.4-.35 5.95 1 7.9.65.96 1.43 2.03 2.45 1.99.98-.04 1.35-.63 2.54-.63 1.18 0 1.52.63 2.56.61 1.06-.02 1.73-.97 2.37-1.93.75-1.1 1.06-2.17 1.07-2.22-.02-.01-2.05-.79-2.07-3.13M14.5 6.1c.54-.66.9-1.57.8-2.48-.78.03-1.72.52-2.28 1.18-.5.58-.94 1.5-.82 2.39.87.06 1.76-.44 2.3-1.09"/></svg></span>
+          <span class="dl-meta"><span class="dl-os">iOS</span><span class="dl-sub">App Store</span></span>
+          <span class="dl-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </a>
+        <a class="dl-card" data-os="android" rel="noopener" aria-disabled="true" tabindex="-1">
+          <span class="dl-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M5 14a7 7 0 0 1 14 0v.6a.4.4 0 0 1-.4.4H5.4a.4.4 0 0 1-.4-.4V14Z" fill="currentColor"/><path d="M7.6 8.2 6.1 6M16.4 8.2 17.9 6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="9.4" cy="12.2" r=".95" fill="var(--paper-2)"/><circle cx="14.6" cy="12.2" r=".95" fill="var(--paper-2)"/></svg></span>
+          <span class="dl-meta"><span class="dl-os">Android</span><span class="dl-sub">Google Play</span></span>
+          <span class="dl-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- LİSANS SATIN AL / YÜKSELT -->
+    <section class="pnl-section" id="buySection">
+      <div class="pnl-section-head">
+        <h2>Lisansınızı Yükseltin</h2>
+        <p>İhtiyacınıza uygun planı seçin. Ödeme güvenli şekilde tamamlanır.</p>
+      </div>
+      <div class="plan-cards">
+        <article class="plan-card">
+          <div class="plan-title">Yıllık Lisans</div>
+          <div class="plan-price"><span class="amt" id="priceYillik">₺4.990</span><span class="per">/ yıl</span></div>
+          <ul class="plan-feats">
+            <li>40'tan fazla modülün tamamı</li>
+            <li>macOS · Windows · iOS · Android</li>
+            <li>Sınırsız öğrenci ve öğretmen</li>
+            <li>E-posta ve sohbet desteği</li>
+          </ul>
+          <button class="btn btn-outline btn-block" data-plan="yillik">Yıllık Lisans Al</button>
+        </article>
+        <article class="plan-card featured">
+          <span class="plan-badge">En avantajlı · %20 tasarruf</span>
+          <div class="plan-title">10 Yıllık Lisans</div>
+          <div class="plan-price"><span class="amt" id="price10yillik">₺39.990</span><span class="per">/ 10 yıl</span></div>
+          <ul class="plan-feats">
+            <li>Yıllık lisanstaki her şey</li>
+            <li>10 yıl ücretsiz güncelleme</li>
+            <li>Öncelikli 7/24 teknik destek</li>
+            <li>Özel kurulum ve eğitim</li>
+          </ul>
+          <button class="btn btn-primary btn-block" data-plan="10yillik">10 Yıllık Lisans Al</button>
+        </article>
+      </div>
+      <p class="pnl-pay-note" id="payNote" hidden></p>
+    </section>
+
+    <!-- HİZMETLER -->
+    <section class="pnl-section">
+      <div class="pnl-section-head">
+        <h2>Hizmetleriniz</h2>
+        <p>Lisansınıza dahil olan modüller ve hizmetler.</p>
+      </div>
+      <div class="svc-grid" id="serviceGrid"></div>
+    </section>
+
+    <!-- ÖDEMELER -->
+    <section class="pnl-section">
+      <div class="pnl-section-head">
+        <h2>Ödeme Geçmişi</h2>
+        <p>Tüm işlemleriniz ve faturalarınız.</p>
+      </div>
+      <div class="pnl-card pay-card">
+        <table class="pay-table" id="payTable">
+          <thead>
+            <tr><th>Tarih</th><th>Plan</th><th>Tutar</th><th>Durum</th></tr>
+          </thead>
+          <tbody id="payBody"></tbody>
+        </table>
+        <div class="pay-empty" id="payEmpty" hidden>Henüz bir ödemeniz bulunmuyor.</div>
+      </div>
+    </section>
+
+    <footer class="pnl-foot">© 2026 Akademia · Kurumsal Okul Yönetim Sistemi</footer>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ÖDEME MODALI -->
+  <div class="pay-overlay" id="payOverlay" hidden>
+    <div class="pay-modal" role="dialog" aria-modal="true" aria-label="Ödeme">
+      <button class="pay-close" id="payClose" aria-label="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+
+      <!-- SOL: animasyonlu kart -->
+      <div class="pay-left">
+        <div class="pay-card-stage">
+          <div class="pcard" id="pcard">
+            <!-- ÖN YÜZ -->
+            <div class="pcard-face pcard-front">
+              <div class="pcard-sheen"></div>
+              <div class="pcard-top">
+                <span class="pcard-chip"></span>
+                <span class="pcard-brand" id="pcBrand">KART</span>
+              </div>
+              <div class="pcard-number" id="pcNumber">•••• •••• •••• ••••</div>
+              <div class="pcard-bottom">
+                <div class="pcard-field">
+                  <span class="pcard-cap">Kart Sahibi</span>
+                  <span class="pcard-val" id="pcName">AD SOYAD</span>
+                </div>
+                <div class="pcard-field pcard-exp">
+                  <span class="pcard-cap">Son Tarih</span>
+                  <span class="pcard-val" id="pcExp">AA/YY</span>
+                </div>
+              </div>
+            </div>
+            <!-- ARKA YÜZ -->
+            <div class="pcard-face pcard-back">
+              <div class="pcard-stripe"></div>
+              <div class="pcard-sig">
+                <span class="pcard-sig-line"></span>
+                <span class="pcard-cvv" id="pcCvv">•••</span>
+              </div>
+              <div class="pcard-back-brand" id="pcBrandBack">KART</div>
+              <div class="pcard-sheen"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAĞ: form -->
+      <div class="pay-right">
+        <div class="pay-head">
+          <h3>Ödeme</h3>
+          <p class="pay-summary"><span id="paySumPlan">—</span> · <strong id="paySumAmount">—</strong></p>
+        </div>
+
+        <form class="pay-form" id="payForm" novalidate autocomplete="off">
+          <label class="pay-label">Kart Numarası
+            <input type="text" id="fNumber" inputmode="numeric" autocomplete="cc-number"
+                   placeholder="0000 0000 0000 0000" maxlength="23" />
+          </label>
+          <label class="pay-label">Kart Üzerindeki İsim
+            <input type="text" id="fName" autocomplete="cc-name" placeholder="Ad Soyad" maxlength="26" />
+          </label>
+          <div class="pay-row2">
+            <label class="pay-label">Son Kullanma
+              <input type="text" id="fExp" inputmode="numeric" autocomplete="cc-exp"
+                     placeholder="AA/YY" maxlength="5" />
+            </label>
+            <label class="pay-label">CVV
+              <input type="text" id="fCvv" inputmode="numeric" autocomplete="cc-csc"
+                     placeholder="123" maxlength="4" />
+            </label>
+          </div>
+
+          <p class="pay-error" id="payError" hidden></p>
+          <p class="pay-test">Test kartı: <code>4242 4242 4242 4242</code> · ileri tarih · herhangi CVV</p>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="paySubmit">
+            <span id="payBtnText">Güvenli Öde</span>
+          </button>
+          <p class="pay-secure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            256-bit SSL ile şifrelenmiş güvenli ödeme
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="panel.js"></script>
+</body>
+</html>

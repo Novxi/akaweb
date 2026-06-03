@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3efe6" />
+  <title>Akademia — Kurumsal Okul Yönetim Sistemi</title>
+  <meta name="description" content="Akademia, okulunuzun tüm akademik ve idari süreçlerini tek bir kurumsal platformda toplar. macOS, Windows, iOS ve Android. Yıllık ve 10 yıllık lisans." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="auth.css" />
+  <script src="content.js"></script>
+</head>
+<body>
+  <!-- TOP UTILITY BAR -->
+  <div class="topbar">
+    <div class="container">
+      <span class="tb-left">Kurumsal Okul Yönetim Sistemi</span>
+      <div class="tb-right">
+        <span class="tb-platforms"><span>macOS</span><span>Windows</span><span>iOS</span><span>Android</span></span>
+        <a href="#iletisim">İletişim</a>
+        <a href="auth.html">Giriş Yap</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="container">
+      <a href="#top" class="brand" aria-label="Akademia ana sayfa">
+        <span class="brand-mark">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 3 4 9.5v13L16 29l12-6.5v-13L16 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5 16 17l6-3.5M16 17v6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>Akademia</span>
+      </a>
+      <nav class="nav-links" aria-label="Ana menü">
+        <a href="#ozellikler">Özellikler</a>
+        <a href="#roller">Roller</a>
+        <a href="#moduller">Modüller</a>
+        <a href="#platformlar">Platformlar</a>
+        <a href="#fiyatlar">Lisans</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="auth.html" class="btn btn-outline">Giriş Yap</a>
+        <a href="auth.html#kayit" class="btn btn-primary">Lisans Alın</a>
+      </div>
+      <button class="nav-burger" id="burger" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-backdrop" id="menuBackdrop"></div>
+  <aside class="mobile-menu" id="mobileMenu" aria-label="Mobil menü" aria-hidden="true">
+    <nav class="mm-links" aria-label="Mobil ana menü">
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#roller">Roller</a>
+      <a href="#moduller">Modüller</a>
+      <a href="#platformlar">Platformlar</a>
+      <a href="#fiyatlar">Lisans</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+    <div class="mm-cta">
+      <a href="auth.html" class="btn btn-outline btn-block btn-lg">Giriş Yap</a>
+      <a href="auth.html#kayit" class="btn btn-primary btn-block btn-lg">Lisans Alın</a>
+    </div>
+  </aside>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="container">
+      <div>
+        <span class="eyebrow" data-reveal>Türkiye için kurumsal okul yönetimi</span>
+        <h1 class="hero-title" data-reveal>Okulunuzun tüm süreçleri, <em>tek bir resmî platformda</em>.</h1>
+        <p class="hero-sub" data-reveal data-edit="heroSub">
+          Ders programından muhasebeye, yoklamadan veli iletişimine kadar 40'tan fazla modül.
+          Akademia; sade, hızlı ve güvenilir bir arayüzle baştan sona son kullanıcı için tasarlandı.
+        </p>
+        <div class="hero-actions" data-reveal>
+          <a href="auth.html#kayit" class="btn btn-primary btn-lg">Lisans Alın
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#ozellikler" class="btn btn-outline btn-lg">Özellikleri İnceleyin</a>
+        </div>
+        <div class="hero-trust" data-reveal>
+          <div class="ht-item"><span class="ht-num" data-count="40">0</span><span class="ht-lbl">Entegre modül</span></div>
+          <div class="ht-item"><span class="ht-num">4</span><span class="ht-lbl">Platform desteği</span></div>
+          <div class="ht-item"><span class="ht-num">7/24</span><span class="ht-lbl">Teknik destek</span></div>
+        </div>
+      </div>
+
+      <!-- light product mock -->
+      <div class="hero-mock" data-reveal>
+        <div class="window" id="tilt">
+          <div class="win-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="win-title">Akademia · Yönetim Paneli</span></div>
+          <div class="win-body">
+            <aside class="ws-side">
+              <span class="ws-group">GENEL</span>
+              <span class="ws-item active" data-view="panel" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg>Panel</span>
+              <span class="ws-item" data-view="program" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Ders Programı</span>
+              <span class="ws-item" data-view="saatler" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Ders Saatleri</span>
+              <span class="ws-group">YÖNETİM</span>
+              <span class="ws-item" data-view="ogretmenler" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0-2-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Öğretmenler</span>
+              <span class="ws-item" data-view="siniflar" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><path d="M3 9 12 5l9 4-9 4-9-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 11v5c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5v-5" stroke="currentColor" stroke-width="1.6"/></svg>Sınıflar</span>
+              <span class="ws-item" data-view="dersler" role="button" tabindex="0"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5a2 2 0 0 1 2-2h6v18H6a2 2 0 0 1-2-2V5ZM20 5a2 2 0 0 0-2-2h-6v18h6a2 2 0 0 0 2-2V5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Dersler</span>
+              <span class="ws-cta" data-scroll="moduller" role="button" tabindex="0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M18 5l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z"/></svg>
+                <span class="ws-cta-text">+40 Özellik</span>
+                <span class="ws-cta-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+              </span>
+            </aside>
+            <main class="wm-main">
+              <div class="wm-head"><h5>Genel Durum</h5><span>2025–2026 · Güz</span></div>
+              <div class="wm-stats">
+                <div class="wm-stat"><div class="num" data-count="1240">0</div><div class="lbl">Öğrenci</div></div>
+                <div class="wm-stat"><div class="num" data-count="86">0</div><div class="lbl">Öğretmen</div></div>
+                <div class="wm-stat"><div class="num" data-count="98">0</div><div class="lbl">Yoklama %</div></div>
+              </div>
+              <div class="wm-chart">
+                <div class="bars"><span style="--h:46%"></span><span style="--h:70%"></span><span style="--h:55%"></span><span style="--h:82%"></span><span style="--h:62%"></span><span style="--h:90%"></span><span style="--h:74%"></span><span style="--h:88%"></span></div>
+                <div class="chart-cap">Haftalık devam ve etkinlik dağılımı</div>
+              </div>
+              <div class="wm-rows">
+                <div class="wm-row"><span class="tick"></span>Yoklama tamamlandı · 9-A</div>
+                <div class="wm-row"><span class="tick g"></span>Veli toplantısı · Cuma 15:00</div>
+              </div>
+            </main>
+          </div>
+        </div>
+        <div class="hero-seal" aria-hidden="true">
+          <span class="seal-top">★ EST. ★</span>
+          <span class="seal-year">2026</span>
+          <span class="seal-bot">AKADEMIA</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <section class="trust-strip">
+    <div class="container">
+      <span class="ts-label">Güvenle tercih edilir</span>
+      <span class="ts-item">İlkokul</span>
+      <span class="ts-item">Ortaokul</span>
+      <span class="ts-item">Lise</span>
+      <span class="ts-item">Özel Okul</span>
+      <span class="ts-item">Kurs & Etüt Merkezi</span>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="ozellikler">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Neden Akademia</span>
+      <h2>Dağınık sistemleri tek bir çatı altında toplar.</h2>
+      <p>Onlarca farklı uygulama ve kâğıt iş yerine; tüm ekibin kolayca kullandığı, hızlı ve güvenilir tek bir kurumsal platform.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3>Bütünleşik Yönetim Paneli</h3>
+        <p>Yoklama, performans, duyuru ve mali durum tek ekranda, anlık ve net biçimde.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6l-8-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Güvenli ve Yedekli Veri</h3>
+        <p>Tüm veriler şifrelenir ve düzenli yedeklenir. Verilerin tamamı kuruma aittir.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="m3 11 18-7-7 18-2.5-8L3 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <h3>Veli & Öğretmen İletişimi</h3>
+        <p>Toplu duyuru, anket ve bildirimlerle paydaşlarla kesintisiz iletişim.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="m7 14 3-3 3 3 5-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Mali Takip ve Muhasebe</h3>
+        <p>Gelir-gider, kantin kartı ve raporlar; kurumun finansal durumu tek bakışta.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M16 10h3l3 3v3a2 2 0 0 1-2 2h-1" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="18" r="1.8" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="18" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3>Servis ve Yemekhane</h3>
+        <p>Servis takibi, kantin kartı ve yemekhane yönetimi tek sistemde.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 21h8M12 18v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <h3>Tüm Cihazlarda Çalışır</h3>
+        <p>macOS, Windows, iOS ve Android. Tek lisans, gerçek zamanlı senkronizasyon.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ROLES / PROFILES -->
+  <section class="section" id="roller">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Herkes için ayrı profil</span>
+      <h2>Yönetici, öğretmen ve veli; <em>her rol için ayrı bir deneyim</em>.</h2>
+      <p>Akademia tek bir okulu üç farklı gözle yönetir. Her profil yalnızca kendisini ilgilendiren ekranları, yetkileri ve bildirimleri görür.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3>Okul Yönetimi</h3>
+        <p>Tüm okulun kontrolü tek panelde: öğretmen ve öğrenci kayıtları, ders programı, mali takip, duyurular ve raporlar. Yöneticiler her şeye tam yetkiyle erişir.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><path d="M3 20a6 6 0 0 1 12 0M17 11a3 3 0 1 0-2-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <h3>Öğretmen</h3>
+        <p>Öğretmenler kendi sınıflarını yönetir: yoklama alır, not ve performans girer, ödev paylaşır ve velilerle doğrudan iletişim kurar. Sade, hızlı ve günlük işe odaklı.</p>
+      </article>
+      <article class="feat-card" data-reveal>
+        <div class="feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.6"/><path d="M5 21a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+        <h3>Veli</h3>
+        <p>Veliler çocuklarını anlık takip eder: devamsızlık, notlar, ödevler, duyurular, servis ve ödeme bilgileri. Tüm okul-veli iletişimi tek uygulamada toplanır.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- STATEMENT BAND -->
+  <section class="statement">
+    <div class="container">
+      <span class="statement-label" data-reveal>Tasarım İlkemiz</span>
+      <blockquote data-reveal>Bir okulu yönetmek karmaşık olmak zorunda değil. Akademia her şeyi <b>tek bir özenli sistemde</b> toplar.</blockquote>
+      <span class="statement-divider" data-reveal></span>
+      <div class="principles">
+        <div class="principle" data-reveal style="--d:.05s">
+          <span class="p-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h10M4 17h7"/></svg></span>
+          <h4>Sade</h4>
+          <p>Karmaşa yok. Aradığınız her şey sezgisel biçimde elinizin altında.</p>
+        </div>
+        <div class="principle" data-reveal style="--d:.15s">
+          <span class="p-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></span>
+          <h4>Hızlı</h4>
+          <p>Anlık veri, gecikmesiz arayüz. Saniyeler içinde sonuç alın.</p>
+        </div>
+        <div class="principle" data-reveal style="--d:.25s">
+          <span class="p-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4 3 6.5 7 8 4-1.5 7-4 7-8V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg></span>
+          <h4>Güvenilir</h4>
+          <p>Şifreli ve yedekli altyapı. Verileriniz her zaman güvende.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULES -->
+  <section class="section" id="moduller">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Eksiksiz Paket</span>
+      <h2>İhtiyacınız olan <em>her şey</em>, tek panelde.</h2>
+      <p>Modülleri tek tek almanıza gerek yok — Akademia 40'tan fazla modülüyle hazır gelir. Kategorilere göz atın.</p>
+    </div>
+    <div class="mod-explorer" data-reveal>
+      <div class="mod-tabs" id="modTabs"></div>
+      <div class="mod-panel" id="modPanel"></div>
+    </div>
+  </section>
+
+  <!-- PLATFORMS -->
+  <section class="section" id="platformlar">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Her cihazda</span>
+      <h2>Masaüstünde güçlü, cebinizde hızlı.</h2>
+      <p>Tek lisans, tüm cihazlar. Verileriniz gerçek zamanlı senkronize edilir.</p>
+    </div>
+    <div class="platform-row">
+      <div class="plat-card" data-reveal>
+        <div class="plat-stage float">
+          <div class="laptop">
+            <div class="scr"><span class="logo apple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2 1.6-3 1.7-3.05-1-1.4-2.4-1.6-2.9-1.62-1.25-.13-2.4.73-3 .73-.62 0-1.57-.71-2.58-.69-1.33.02-2.55.77-3.23 1.96-1.38 2.4-.35 5.95 1 7.9.65.96 1.43 2.03 2.45 1.99.98-.04 1.35-.63 2.54-.63 1.18 0 1.52.63 2.56.61 1.06-.02 1.73-.97 2.37-1.93.75-1.1 1.06-2.17 1.07-2.22-.02-.01-2.05-.79-2.07-3.13M14.5 6.1c.54-.66.9-1.57.8-2.48-.78.03-1.72.52-2.28 1.18-.5.58-.94 1.5-.82 2.39.87.06 1.76-.44 2.3-1.09"/></svg></span></div>
+            <div class="deck"></div>
+          </div>
+        </div>
+        <h4>macOS</h4><p>Yerel, akıcı ve enerji dostu masaüstü uygulaması.</p>
+      </div>
+      <div class="plat-card" data-reveal>
+        <div class="plat-stage float">
+          <div class="laptop">
+            <div class="scr"><span class="logo win"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.4v7.1H3V5.5Zm0 13L10.5 19.6v-7H3v6.9ZM11.5 4.25 21 3v8.5h-9.5v-7.25ZM11.5 19.75 21 21v-8.5h-9.5v7.25Z"/></svg></span></div>
+            <div class="deck"></div>
+          </div>
+        </div>
+        <h4>Windows</h4><p>Her PC'de tam performans ve anlık bildirimler.</p>
+      </div>
+      <div class="plat-card" data-reveal>
+        <div class="plat-stage float">
+          <div class="phone iphone">
+            <div class="scr"><span class="logo apple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2 1.6-3 1.7-3.05-1-1.4-2.4-1.6-2.9-1.62-1.25-.13-2.4.73-3 .73-.62 0-1.57-.71-2.58-.69-1.33.02-2.55.77-3.23 1.96-1.38 2.4-.35 5.95 1 7.9.65.96 1.43 2.03 2.45 1.99.98-.04 1.35-.63 2.54-.63 1.18 0 1.52.63 2.56.61 1.06-.02 1.73-.97 2.37-1.93.75-1.1 1.06-2.17 1.07-2.22-.02-.01-2.05-.79-2.07-3.13M14.5 6.1c.54-.66.9-1.57.8-2.48-.78.03-1.72.52-2.28 1.18-.5.58-.94 1.5-.82 2.39.87.06 1.76-.44 2.3-1.09"/></svg></span></div>
+          </div>
+        </div>
+        <h4>iOS</h4><p>iPhone ve iPad için optimize, dokunmatik odaklı arayüz.</p>
+      </div>
+      <div class="plat-card" data-reveal>
+        <div class="plat-stage float">
+          <div class="phone android">
+            <div class="scr"><span class="logo android"><svg viewBox="0 0 24 24" fill="none"><path d="M5 14a7 7 0 0 1 14 0v.6a.4.4 0 0 1-.4.4H5.4a.4.4 0 0 1-.4-.4V14Z" fill="currentColor"/><path d="M7.6 8.2 6.1 6M16.4 8.2 17.9 6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><circle cx="9.4" cy="12.2" r=".95" fill="#0b1730"/><circle cx="14.6" cy="12.2" r=".95" fill="#0b1730"/></svg></span></div>
+          </div>
+        </div>
+        <h4>Android</h4><p>Tüm telefon ve tabletlerde hafif, akıcı uygulama.</p>
+      </div>
+    </div>
+    <div class="sync-note" data-reveal>
+      Tüm cihazlarınız <strong>gerçek zamanlı</strong> senkronize edilir — bir yerde yapılan değişiklik anında her yerde görünür.
+    </div>
+  </section>
+
+  <!-- KEY SYSTEM -->
+  <section class="section" id="nasil">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Lisans (Key) Sistemi</span>
+      <h2>Üç adımda kullanıma hazır.</h2>
+      <p>Lisans key'inizi alın, uygulamaya girin, anında kullanmaya başlayın.</p>
+    </div>
+    <div class="steps">
+      <div class="step" data-reveal>
+        <div class="step-badge"><span class="step-num">1</span></div>
+        <span class="step-tag">Başlangıç</span>
+        <h4>Lisans Edinin</h4>
+        <p>Yıllık veya 10 yıllık lisans key'inizi resmî olarak temin edin.</p>
+      </div>
+      <div class="step" data-reveal style="--d:.14s">
+        <div class="step-badge"><span class="step-num">2</span></div>
+        <span class="step-tag">Kurulum</span>
+        <h4>Uygulamaya Girin</h4>
+        <p>İlgili cihaza Akademia'yı indirin ve lisans key'inizi girin.</p>
+      </div>
+      <div class="step" data-reveal style="--d:.28s">
+        <div class="step-badge"><span class="step-num">3</span></div>
+        <span class="step-tag">Kullanım</span>
+        <h4>Yönetmeye Başlayın</h4>
+        <p>Tüm modüller aktiftir. Okulunuz artık tek merkezden yönetilir.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section" id="fiyatlar">
+    <div class="section-head center" data-reveal>
+      <span class="eyebrow">Lisanslama</span>
+      <h2>Bir kez alın, yıllarca kullanın.</h2>
+      <p>Gizli ücret yoktur. Tüm modüller ve tüm platformlar lisansa dahildir.</p>
+    </div>
+    <div class="price-grid">
+      <article class="price-card" data-reveal>
+        <div class="pc-name" data-edit="y_name">Yıllık Lisans</div>
+        <div class="pc-tag" data-edit="y_tag">Tek öğretim yılı geçerlidir</div>
+        <div class="pc-price"><span class="pc-cur" data-edit="cur">₺</span><span class="pc-amount" data-edit="y_amount">4.990</span><span class="pc-per" data-edit="y_per">/ yıl</span></div>
+        <p class="pc-desc" data-edit="y_desc">Bir öğretim yılı boyunca tüm özellikler.</p>
+        <ul class="pc-feats" id="y_feats">
+          <li>40'tan fazla modülün tamamı</li>
+          <li>macOS · Windows · iOS · Android</li>
+          <li>Sınırsız öğrenci ve öğretmen</li>
+          <li>Gerçek zamanlı senkronizasyon</li>
+          <li>E-posta ve sohbet desteği</li>
+        </ul>
+        <a href="auth.html#kayit" class="btn btn-outline btn-block">Yıllık Lisans Alın</a>
+      </article>
+
+      <article class="price-card featured" data-reveal>
+        <span class="best-badge" data-edit="t_badge">En avantajlı · %20 tasarruf</span>
+        <div class="pc-name" data-edit="t_name">10 Yıllık Lisans</div>
+        <div class="pc-tag" data-edit="t_tag">Yılda yalnızca ₺3.999'a denk gelir</div>
+        <div class="pc-price"><span class="pc-cur" data-edit="cur">₺</span><span class="pc-amount" data-edit="t_amount">39.990</span><span class="pc-per" data-edit="t_per">/ 10 yıl</span></div>
+        <p class="pc-desc" data-edit="t_desc">Bir kez alın, on yıl boyunca rahat edin.</p>
+        <ul class="pc-feats" id="t_feats">
+          <li>Yıllık lisanstaki her şey</li>
+          <li>10 yıl boyunca ücretsiz güncelleme</li>
+          <li>Öncelikli 7/24 teknik destek</li>
+          <li>Özel kurulum ve personel eğitimi</li>
+          <li>Veri taşıma ve yedekleme</li>
+          <li>Fiyat artışlarından etkilenmezsiniz</li>
+        </ul>
+        <a href="auth.html#kayit" class="btn btn-primary btn-block">10 Yıllık Lisans Alın</a>
+      </article>
+    </div>
+    <p class="price-foot" data-reveal>Çoklu kampüs ve kurumsal lisanslar için <a href="#iletisim">bizimle iletişime geçin</a>.</p>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container">
+      <div class="cta-box" data-reveal>
+        <h2>Okulunuzu tek bir sistemle yönetin.</h2>
+        <p>Akademia ile öğretmenler ve yöneticiler her gün zamandan kazanır. Kurumunuz için bugün başlayın.</p>
+        <a href="auth.html#kayit" class="btn btn-primary btn-lg">Lisans Alın
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="iletisim">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="foot-brand">
+          <a href="#top" class="brand">
+            <span class="brand-mark"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3 4 9.5v13L16 29l12-6.5v-13L16 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5 16 17l6-3.5M16 17v6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span>Akademia</span>
+          </a>
+          <p>Okulunuzun tüm akademik ve idari süreçleri için kurumsal yönetim sistemi.</p>
+        </div>
+        <div class="foot-col"><h5>Ürün</h5><a href="#ozellikler">Özellikler</a><a href="#roller">Roller</a><a href="#moduller">Modüller</a><a href="#platformlar">Platformlar</a><a href="#fiyatlar">Lisans</a></div>
+        <div class="foot-col"><h5>Destek</h5><a href="#">Yardım Merkezi</a><a href="#">Kurulum Kılavuzu</a><a href="#">İletişim</a><a href="#">Sistem Durumu</a></div>
+        <div class="foot-col"><h5>Kurum</h5><a href="#">Hakkımızda</a><a href="#">Gizlilik Politikası</a><a href="#">Kullanım Şartları</a><a href="#">KVKK Aydınlatma</a></div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Akademia. Tüm hakları saklıdır.</span>
+        <span>macOS · Windows · iOS · Android</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AUTH MODAL (giriş / kayıt pop-up) -->
+  <div class="auth-modal" id="authModal" hidden>
+    <div class="auth-modal-backdrop" data-auth-close></div>
+    <div class="auth-modal-shell">
+      <div class="flip" id="authFlip">
+        <div class="flip-inner">
+          <!-- ÖN YÜZ: GİRİŞ -->
+          <section class="flip-face front">
+            <div class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+              <button class="auth-modal-close" type="button" data-auth-close aria-label="Kapat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+              <span class="auth-eyebrow">Tekrar hoş geldiniz</span>
+              <h1 id="authModalTitle">Giriş Yap</h1>
+              <form class="auth-form" id="mLoginForm" novalidate>
+                <label>E-posta
+                  <input type="email" name="email" placeholder="ornek@okul.edu.tr" required autocomplete="email" />
+                </label>
+                <label>Şifre
+                  <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+                </label>
+                <div class="auth-row">
+                  <label class="cb"><input type="checkbox" /> Beni hatırla</label>
+                  <a href="#">Şifremi unuttum</a>
+                </div>
+                <p class="auth-error" id="mLoginError" hidden></p>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Giriş Yap</button>
+              </form>
+              <p class="auth-switch">Hesabınız yok mu? <button type="button" data-auth-flip="register">Kayıt olun</button></p>
+            </div>
+          </section>
+
+          <!-- ARKA YÜZ: KAYIT -->
+          <section class="flip-face back">
+            <div class="auth-card" role="dialog" aria-modal="true">
+              <button class="auth-modal-close" type="button" data-auth-close aria-label="Kapat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+              <span class="auth-eyebrow">Akademia'ya katılın</span>
+              <h1>Hesap Oluştur</h1>
+              <form class="auth-form" id="mRegisterForm" novalidate>
+                <label>Ad Soyad
+                  <input type="text" name="name" placeholder="Ad Soyad" required autocomplete="name" />
+                </label>
+                <label>Okul / Kurum
+                  <input type="text" name="school" placeholder="Okulunuzun adı" required />
+                </label>
+                <label>E-posta
+                  <input type="email" name="email" placeholder="ornek@okul.edu.tr" required autocomplete="email" />
+                </label>
+                <label>Şifre
+                  <input type="password" name="password" placeholder="En az 8 karakter" required autocomplete="new-password" />
+                </label>
+                <p class="auth-error" id="mRegisterError" hidden></p>
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Hesabı Oluştur</button>
+              </form>
+              <p class="auth-switch">Zaten hesabınız var mı? <button type="button" data-auth-flip="login">Giriş yapın</button></p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    (function () {
+      var modal = document.getElementById('authModal');
+      if (!modal) return;
+      var flip = document.getElementById('authFlip');
+      var lastFocus = null;
+
+      function setView(v, focus) {
+        var reg = v === 'register';
+        flip.classList.toggle('flipped', reg);
+        if (focus) {
+          var face = flip.querySelector(reg ? '.back' : '.front');
+          var first = face.querySelector('input');
+          setTimeout(function () { if (first) first.focus(); }, reg ? 520 : 80);
+        }
+      }
+      function openModal(v) {
+        lastFocus = document.activeElement;
+        setView(v || 'login', true);
+        modal.hidden = false;
+        document.body.classList.add('auth-open');
+      }
+      function closeModal() {
+        modal.hidden = true;
+        document.body.classList.remove('auth-open');
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      // auth.html bağlantılarını yakala → yeni sayfa yerine pop-up
+      document.querySelectorAll('a[href^="auth.html"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal(/#kayit/.test(a.getAttribute('href')) ? 'register' : 'login');
+        });
+      });
+
+      modal.querySelectorAll('[data-auth-close]').forEach(function (el) {
+        el.addEventListener('click', closeModal);
+      });
+      modal.querySelectorAll('[data-auth-flip]').forEach(function (b) {
+        b.addEventListener('click', function () { setView(b.dataset.authFlip, true); });
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
+
+      // form gönderimi (auth.html ile aynı uçlar)
+      function go(role) { location.href = role === 'admin' ? 'admin.html' : 'panel.html'; }
+      function showError(el, msg) { el.textContent = msg; el.hidden = false; }
+      async function submitForm(form, url, errEl, btn) {
+        var data = Object.fromEntries(new FormData(form).entries());
+        errEl.hidden = true;
+        btn.disabled = true;
+        var old = btn.textContent;
+        btn.textContent = 'Lütfen bekleyin…';
+        try {
+          var res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(data),
+          });
+          var out = await res.json();
+          if (!res.ok) { showError(errEl, out.error || 'Bir hata oluştu.'); return; }
+          go(out.role);
+        } catch (err) {
+          showError(errEl, 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = old;
+        }
+      }
+      var mLogin = document.getElementById('mLoginForm');
+      var mRegister = document.getElementById('mRegisterForm');
+      mLogin.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitForm(mLogin, '/api/login', document.getElementById('mLoginError'), mLogin.querySelector('button[type=submit]'));
+      });
+      mRegister.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitForm(mRegister, '/api/register', document.getElementById('mRegisterError'), mRegister.querySelector('button[type=submit]'));
+      });
+    })();
+  </script>
+</body>
+</html>

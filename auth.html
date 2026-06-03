@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f3efe6" />
+  <title>Akademia — Giriş Yap / Kayıt Ol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body class="auth-body">
+  <div class="auth-bg" aria-hidden="true"></div>
+  <a href="index.html" class="auth-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+    Siteye dön
+  </a>
+
+  <div class="auth-stage">
+    <a href="index.html" class="auth-brand">
+      <span class="brand-mark"><svg viewBox="0 0 32 32" fill="none"><path d="M16 3 4 9.5v13L16 29l12-6.5v-13L16 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 13.5 16 17l6-3.5M16 17v6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Akademia
+    </a>
+
+    <div class="flip" id="flip">
+      <div class="flip-inner">
+        <!-- ÖN YÜZ: GİRİŞ -->
+        <section class="flip-face front">
+          <div class="auth-card">
+            <span class="auth-eyebrow">Tekrar hoş geldiniz</span>
+            <h1>Giriş Yap</h1>
+            <form class="auth-form" id="loginForm" novalidate>
+              <label>E-posta
+                <input type="email" name="email" placeholder="ornek@okul.edu.tr" required autocomplete="email" />
+              </label>
+              <label>Şifre
+                <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password" />
+              </label>
+              <div class="auth-row">
+                <label class="cb"><input type="checkbox" /> Beni hatırla</label>
+                <a href="#">Şifremi unuttum</a>
+              </div>
+              <p class="auth-error" id="loginError" hidden></p>
+              <button type="submit" class="btn btn-primary btn-block btn-lg">Giriş Yap</button>
+            </form>
+            <p class="auth-switch">Hesabınız yok mu? <button type="button" id="toRegister">Kayıt olun</button></p>
+          </div>
+        </section>
+
+        <!-- ARKA YÜZ: KAYIT -->
+        <section class="flip-face back">
+          <div class="auth-card">
+            <span class="auth-eyebrow">Akademia'ya katılın</span>
+            <h1>Hesap Oluştur</h1>
+            <form class="auth-form" id="registerForm" novalidate>
+              <label>Ad Soyad
+                <input type="text" name="name" placeholder="Ad Soyad" required autocomplete="name" />
+              </label>
+              <label>Okul / Kurum
+                <input type="text" name="school" placeholder="Okulunuzun adı" required />
+              </label>
+              <label>E-posta
+                <input type="email" name="email" placeholder="ornek@okul.edu.tr" required autocomplete="email" />
+              </label>
+              <label>Şifre
+                <input type="password" name="password" placeholder="En az 8 karakter" required autocomplete="new-password" />
+              </label>
+              <p class="auth-error" id="registerError" hidden></p>
+              <button type="submit" class="btn btn-primary btn-block btn-lg">Hesabı Oluştur</button>
+            </form>
+            <p class="auth-switch">Zaten hesabınız var mı? <button type="button" id="toLogin">Giriş yapın</button></p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <p class="auth-foot">© 2026 Akademia · Kurumsal Okul Yönetim Sistemi</p>
+  </div>
+
+  <script>
+    (function () {
+      var flip = document.getElementById('flip');
+      var toRegister = document.getElementById('toRegister');
+      var toLogin = document.getElementById('toLogin');
+      toRegister.addEventListener('click', function () { flip.classList.add('flipped'); });
+      toLogin.addEventListener('click', function () { flip.classList.remove('flipped'); });
+      if (location.hash === '#kayit') flip.classList.add('flipped');
+
+      // role'e göre yönlendirme: admin -> admin.html, müşteri -> panel.html
+      function go(role) {
+        location.href = role === 'admin' ? 'admin.html' : 'panel.html';
+      }
+
+      function showError(el, msg) {
+        el.textContent = msg;
+        el.hidden = false;
+      }
+
+      async function submitForm(form, url, errEl, btn) {
+        var data = Object.fromEntries(new FormData(form).entries());
+        errEl.hidden = true;
+        btn.disabled = true;
+        var oldText = btn.textContent;
+        btn.textContent = 'Lütfen bekleyin…';
+        try {
+          var res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(data),
+          });
+          var out = await res.json();
+          if (!res.ok) {
+            showError(errEl, out.error || 'Bir hata oluştu.');
+            return;
+          }
+          go(out.role);
+        } catch (err) {
+          showError(errEl, 'Sunucuya ulaşılamadı. Lütfen tekrar deneyin.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = oldText;
+        }
+      }
+
+      var loginForm = document.getElementById('loginForm');
+      var registerForm = document.getElementById('registerForm');
+      loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitForm(loginForm, '/api/login', document.getElementById('loginError'),
+          loginForm.querySelector('button[type=submit]'));
+      });
+      registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        submitForm(registerForm, '/api/register', document.getElementById('registerError'),
+          registerForm.querySelector('button[type=submit]'));
+      });
+
+      // zaten girişliyse uygun panele yönlendir
+      fetch('/api/me', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && d.user) go(d.user.role); })
+        .catch(function () {});
+    })();
+  </script>
+</body>
+</html>

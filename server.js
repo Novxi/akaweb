@@ -371,8 +371,8 @@ app.post('/api/pay', requireAuth, async (req, res) => {
   }
 });
 
-/* ---------- statik site ---------- */
-app.use(express.static(__dirname, { extensions: ['html'] }));
+/* ---------- statik site (yalnızca public/; backend dosyaları dışarı sunulmaz) ---------- */
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 
 /* ---------- başlat ---------- */
 db.init()

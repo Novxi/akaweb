@@ -39,8 +39,8 @@
   var PLAN_LABEL = { yillik: 'Yıllık Lisans', '10yillik': '10 Yıllık Lisans' };
   // İndirme bağlantıları — gerçek kurulum dosyaları/mağaza linkleriyle değiştirin.
   var DOWNLOADS = {
-    macos: '/downloads/Akademia-macOS.dmg',
-    windows: '/downloads/Akademia-Windows.exe',
+    macos: '/downloads/Akademia-0.1.0-Mac.dmg',
+    windows: '/downloads/Akademia-0.1.0-Windows.zip',
     ios: 'https://apps.apple.com/app/akademia',
     android: 'https://play.google.com/store/apps/details?id=tr.net.akademia',
   };

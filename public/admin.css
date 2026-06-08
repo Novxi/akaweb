@@ -94,6 +94,13 @@
 .pill.warn{background:rgba(202,163,88,.16);color:var(--gold-1)}
 .pill.off{background:rgba(21,41,77,.08);color:var(--ink-faint)}
 
+.btn-approve{font-size:12.5px;font-weight:600;padding:7px 14px;border-radius:8px;border:0;cursor:pointer;
+  background:var(--navy);color:#fff;transition:.2s;white-space:nowrap}
+.btn-approve:hover{background:var(--navy-deep);transform:translateY(-1px)}
+.btn-approve:disabled{opacity:.6;cursor:default;transform:none}
+.btn-approve.ghost{background:transparent;color:var(--navy);border:1px solid var(--line)}
+.btn-approve.ghost:hover{border-color:var(--gold-1);background:rgba(202,163,88,.06)}
+
 .placeholder{text-align:center;padding:70px 20px;color:var(--ink-soft)}
 .placeholder .pic{width:64px;height:64px;border-radius:16px;margin:0 auto 18px;display:grid;place-items:center;background:linear-gradient(150deg,#eef1f7,#e7ebf4);color:var(--navy)}
 .placeholder .pic svg{width:30px;height:30px}

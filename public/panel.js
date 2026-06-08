@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var CFG = { currency: 'try', stripeEnabled: false, plans: {} };
+  var CFG = { currency: 'try', transfer: {}, plans: {} };
   var CUR_SYMBOL = { try: '₺', usd: '$', eur: '€' };
 
   function api(url, opts) {
@@ -52,6 +52,7 @@
   };
 
   function renderAccount(u) {
+    ACCOUNT_EMAIL = u.email || '';
     document.getElementById('userName').textContent = u.name;
     document.getElementById('userMail').textContent = u.email;
     document.getElementById('userAvatar').textContent = initials(u.name);
@@ -156,65 +157,32 @@
     document.getElementById('price10yillik').textContent = planAmountLabel('10yillik') || '₺39.990';
   }
 
-  /* ============ ÖDEME MODALI (animasyonlu kart) ============ */
-  var pay = {
-    overlay: null, card: null, form: null, plan: null, lastFocus: null,
-  };
+  /* ============ HAVALE / EFT MODALI ============ */
+  var pay = { overlay: null, error: null, plan: null, lastFocus: null };
+  var ACCOUNT_EMAIL = '';
 
-  function detectBrand(digits) {
-    if (/^4/.test(digits)) return 'VISA';
-    if (/^(5[1-5]|2(2[2-9]|[3-6]\d|7[01]|720))/.test(digits)) return 'MASTERCARD';
-    if (/^3[47]/.test(digits)) return 'AMEX';
-    if (/^(6011|65|64[4-9])/.test(digits)) return 'DISCOVER';
-    if (/^9792/.test(digits)) return 'TROY';
-    return 'KART';
-  }
-  function groupNumber(digits) {
-    // 4'erli grupla; eksik haneleri • ile doldur (16 hane)
-    var full = (digits + '••••••••••••••••').slice(0, 16);
-    var groups = [];
-    for (var i = 0; i < 16; i += 4) {
-      var g = full.slice(i, i + 4);
-      var typed = Math.max(0, Math.min(4, digits.length - i));
-      groups.push(
-        '<span>' +
-        '<b class="filled">' + g.slice(0, typed) + '</b>' +
-        g.slice(typed) +
-        '</span>'
-      );
-    }
-    return groups.join('');
-  }
-
-  function renderCard() {
-    var num = pay.fNumber.value.replace(/\D/g, '');
-    pay.pcNumber.innerHTML = groupNumber(num);
-    var brand = detectBrand(num);
-    pay.pcBrand.textContent = brand;
-    pay.pcBrandBack.textContent = brand;
-    pay.pcName.textContent = pay.fName.value.trim() ? pay.fName.value.toUpperCase() : 'AD SOYAD';
-    pay.pcExp.textContent = pay.fExp.value || 'AA/YY';
-    pay.pcCvv.textContent = pay.fCvv.value ? pay.fCvv.value.replace(/./g, '•') : '•••';
-  }
-  function flipCard(back) {
-    pay.card.classList.toggle('flipped', !!back);
+  function planTitle(plan) {
+    return plan === '10yillik' ? '10 Yıllık Lisans' : 'Yıllık Lisans';
   }
 
   function openPayModal(plan) {
     pay.plan = plan;
-    var p = CFG.plans[plan] || {};
-    document.getElementById('paySumPlan').textContent =
-      plan === '10yillik' ? '10 Yıllık Lisans' : 'Yıllık Lisans';
-    document.getElementById('paySumAmount').textContent = planAmountLabel(plan);
-    // sıfırla
-    pay.form.reset();
-    renderCard();
-    flipCard(false);
+    var amount = planAmountLabel(plan);
+    document.getElementById('paySumPlan').textContent = planTitle(plan);
+    document.getElementById('paySumAmount').textContent = amount;
+    document.getElementById('xferAmount').textContent = amount;
+
+    var t = CFG.transfer || {};
+    document.getElementById('xferIban').textContent = t.iban || '—';
+    document.getElementById('xferName').textContent = t.name || '—';
+    document.getElementById('xferBank').textContent = t.bank || '—';
+    document.getElementById('xferRef').textContent = ACCOUNT_EMAIL || 'E-posta adresiniz';
+
     pay.error.hidden = true;
     pay.lastFocus = document.activeElement;
     pay.overlay.hidden = false;
     document.body.style.overflow = 'hidden';
-    setTimeout(function () { pay.fNumber.focus(); }, 50);
+    setTimeout(function () { document.getElementById('paySubmit').focus(); }, 50);
   }
   function closePayModal() {
     pay.overlay.hidden = true;
@@ -222,36 +190,29 @@
     if (pay.lastFocus && pay.lastFocus.focus) pay.lastFocus.focus();
   }
 
-  async function submitPay(e) {
-    e.preventDefault();
+  async function submitPay() {
     pay.error.hidden = true;
     var btn = document.getElementById('paySubmit');
     var txt = document.getElementById('payBtnText');
     var old = txt.textContent;
-    btn.disabled = true; txt.textContent = 'İşleniyor…';
+    btn.disabled = true; txt.textContent = 'Gönderiliyor…';
     try {
-      var res = await api('/api/pay', {
+      var res = await api('/api/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          plan: pay.plan,
-          number: pay.fNumber.value,
-          exp: pay.fExp.value,
-          cvv: pay.fCvv.value,
-          name: pay.fName.value,
-        }),
+        body: JSON.stringify({ plan: pay.plan }),
       });
       var out = await res.json();
       if (!res.ok) {
-        pay.error.textContent = out.error || 'Ödeme başarısız.';
+        pay.error.textContent = out.error || 'Bildirim gönderilemedi.';
         pay.error.hidden = false;
         return;
       }
       closePayModal();
       var note = document.getElementById('flashNote');
       note.hidden = false; note.className = 'pnl-note ok';
-      note.textContent = 'Ödemeniz başarıyla alındı — lisansınız aktifleştirildi. Teşekkürler!';
-      toast('Ödeme başarılı ✓');
+      note.textContent = 'Havale bildiriminiz alındı. Ödemeniz onaylandığında lisansınız etkinleştirilecek.';
+      toast('Bildirim alındı ✓');
       await refresh();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
@@ -264,43 +225,15 @@
 
   function initPayModal() {
     pay.overlay = document.getElementById('payOverlay');
-    pay.card = document.getElementById('pcard');
-    pay.form = document.getElementById('payForm');
     pay.error = document.getElementById('payError');
-    pay.fNumber = document.getElementById('fNumber');
-    pay.fName = document.getElementById('fName');
-    pay.fExp = document.getElementById('fExp');
-    pay.fCvv = document.getElementById('fCvv');
-    pay.pcNumber = document.getElementById('pcNumber');
-    pay.pcName = document.getElementById('pcName');
-    pay.pcExp = document.getElementById('pcExp');
-    pay.pcCvv = document.getElementById('pcCvv');
-    pay.pcBrand = document.getElementById('pcBrand');
-    pay.pcBrandBack = document.getElementById('pcBrandBack');
 
-    // kart numarası: rakam + 4'erli boşluk
-    pay.fNumber.addEventListener('input', function () {
-      var d = this.value.replace(/\D/g, '').slice(0, 19);
-      this.value = d.replace(/(.{4})/g, '$1 ').trim();
-      renderCard();
-    });
-    pay.fName.addEventListener('input', renderCard);
-    // son kullanma: AA/YY
-    pay.fExp.addEventListener('input', function () {
-      var d = this.value.replace(/\D/g, '').slice(0, 4);
-      this.value = d.length >= 3 ? d.slice(0, 2) + '/' + d.slice(2) : d;
-      renderCard();
-    });
-    // cvv: yalnız rakam, kartı çevir
-    pay.fCvv.addEventListener('input', function () {
-      this.value = this.value.replace(/\D/g, '').slice(0, 4);
-      renderCard();
-    });
-    pay.fCvv.addEventListener('focus', function () { flipCard(true); });
-    pay.fCvv.addEventListener('blur', function () { flipCard(false); });
-
-    pay.form.addEventListener('submit', submitPay);
+    document.getElementById('paySubmit').addEventListener('click', submitPay);
     document.getElementById('payClose').addEventListener('click', closePayModal);
+    var copyIban = document.getElementById('copyIban');
+    if (copyIban) copyIban.addEventListener('click', function () {
+      var iban = document.getElementById('xferIban').textContent.replace(/\s+/g, '');
+      navigator.clipboard.writeText(iban).then(function () { toast('IBAN kopyalandı ✓'); });
+    });
     pay.overlay.addEventListener('click', function (e) {
       if (e.target === pay.overlay) closePayModal();
     });
@@ -322,28 +255,6 @@
     renderPayments(payments);
   }
 
-  async function handleReturn() {
-    var params = new URLSearchParams(location.search);
-    var note = document.getElementById('flashNote');
-    if (params.get('canceled')) {
-      note.hidden = false; note.className = 'pnl-note warn';
-      note.textContent = 'Ödeme iptal edildi. Dilediğiniz zaman tekrar deneyebilirsiniz.';
-      history.replaceState({}, '', 'panel.html');
-    }
-    var paid = params.get('paid');
-    if (paid) {
-      try {
-        var res = await api('/api/checkout/verify?session_id=' + encodeURIComponent(paid));
-        var out = await res.json();
-        if (out.ok && out.status === 'paid') {
-          note.hidden = false; note.className = 'pnl-note ok';
-          note.textContent = 'Ödemeniz başarıyla alındı — lisansınız aktifleştirildi. Teşekkürler!';
-        }
-      } catch (e) {}
-      history.replaceState({}, '', 'panel.html');
-    }
-  }
-
   async function load() {
     // oturum kontrolü
     var meRes = await api('/api/me');
@@ -354,8 +265,6 @@
     var cfg = await (await api('/api/config')).json();
     CFG = cfg;
     setPrices();
-
-    await handleReturn();
 
     var account = (await (await api('/api/account')).json()).user;
     var services = (await (await api('/api/services')).json()).services;

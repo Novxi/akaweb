@@ -103,7 +103,7 @@
     <section class="pnl-section" id="buySection">
       <div class="pnl-section-head">
         <h2>Lisansınızı Yükseltin</h2>
-        <p>İhtiyacınıza uygun planı seçin. Ödeme güvenli şekilde tamamlanır.</p>
+        <p>İhtiyacınıza uygun planı seçin. Ödemeyi havale/EFT ile yapabilirsiniz.</p>
       </div>
       <div class="plan-cards">
         <article class="plan-card">
@@ -130,7 +130,6 @@
           <button class="btn btn-primary btn-block" data-plan="10yillik">10 Yıllık Lisans Al</button>
         </article>
       </div>
-      <p class="pnl-pay-note" id="payNote" hidden></p>
     </section>
 
     <!-- HİZMETLER -->
@@ -164,87 +163,51 @@
 
   <div class="toast" id="toast"></div>
 
-  <!-- ÖDEME MODALI -->
+  <!-- HAVALE / EFT MODALI -->
   <div class="pay-overlay" id="payOverlay" hidden>
-    <div class="pay-modal" role="dialog" aria-modal="true" aria-label="Ödeme">
+    <div class="pay-modal xfer-modal" role="dialog" aria-modal="true" aria-label="Havale ile Ödeme">
       <button class="pay-close" id="payClose" aria-label="Kapat">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
 
-      <!-- SOL: animasyonlu kart -->
-      <div class="pay-left">
-        <div class="pay-card-stage">
-          <div class="pcard" id="pcard">
-            <!-- ÖN YÜZ -->
-            <div class="pcard-face pcard-front">
-              <div class="pcard-sheen"></div>
-              <div class="pcard-top">
-                <span class="pcard-chip"></span>
-                <span class="pcard-brand" id="pcBrand">KART</span>
-              </div>
-              <div class="pcard-number" id="pcNumber">•••• •••• •••• ••••</div>
-              <div class="pcard-bottom">
-                <div class="pcard-field">
-                  <span class="pcard-cap">Kart Sahibi</span>
-                  <span class="pcard-val" id="pcName">AD SOYAD</span>
-                </div>
-                <div class="pcard-field pcard-exp">
-                  <span class="pcard-cap">Son Tarih</span>
-                  <span class="pcard-val" id="pcExp">AA/YY</span>
-                </div>
-              </div>
-            </div>
-            <!-- ARKA YÜZ -->
-            <div class="pcard-face pcard-back">
-              <div class="pcard-stripe"></div>
-              <div class="pcard-sig">
-                <span class="pcard-sig-line"></span>
-                <span class="pcard-cvv" id="pcCvv">•••</span>
-              </div>
-              <div class="pcard-back-brand" id="pcBrandBack">KART</div>
-              <div class="pcard-sheen"></div>
-            </div>
-          </div>
-        </div>
+      <div class="pay-head">
+        <h3>Havale / EFT ile Ödeme</h3>
+        <p class="pay-summary"><span id="paySumPlan">—</span> · <strong id="paySumAmount">—</strong></p>
       </div>
 
-      <!-- SAĞ: form -->
-      <div class="pay-right">
-        <div class="pay-head">
-          <h3>Ödeme</h3>
-          <p class="pay-summary"><span id="paySumPlan">—</span> · <strong id="paySumAmount">—</strong></p>
+      <div class="xfer-body">
+        <p class="xfer-intro">Aşağıdaki hesaba <strong id="xferAmount">—</strong> tutarında havale/EFT yapın.
+          Açıklama kısmına <strong>e-posta adresinizi</strong> yazmayı unutmayın.</p>
+
+        <div class="xfer-rows">
+          <div class="xfer-row">
+            <span class="xfer-cap">IBAN</span>
+            <span class="xfer-val" id="xferIban">—</span>
+            <button class="xfer-copy" id="copyIban" type="button" aria-label="IBAN kopyala">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            </button>
+          </div>
+          <div class="xfer-row">
+            <span class="xfer-cap">Hesap Sahibi</span>
+            <span class="xfer-val" id="xferName">—</span>
+          </div>
+          <div class="xfer-row">
+            <span class="xfer-cap">Banka</span>
+            <span class="xfer-val" id="xferBank">—</span>
+          </div>
+          <div class="xfer-row">
+            <span class="xfer-cap">Açıklama</span>
+            <span class="xfer-val" id="xferRef">—</span>
+          </div>
         </div>
 
-        <form class="pay-form" id="payForm" novalidate autocomplete="off">
-          <label class="pay-label">Kart Numarası
-            <input type="text" id="fNumber" inputmode="numeric" autocomplete="cc-number"
-                   placeholder="0000 0000 0000 0000" maxlength="23" />
-          </label>
-          <label class="pay-label">Kart Üzerindeki İsim
-            <input type="text" id="fName" autocomplete="cc-name" placeholder="Ad Soyad" maxlength="26" />
-          </label>
-          <div class="pay-row2">
-            <label class="pay-label">Son Kullanma
-              <input type="text" id="fExp" inputmode="numeric" autocomplete="cc-exp"
-                     placeholder="AA/YY" maxlength="5" />
-            </label>
-            <label class="pay-label">CVV
-              <input type="text" id="fCvv" inputmode="numeric" autocomplete="cc-csc"
-                     placeholder="123" maxlength="4" />
-            </label>
-          </div>
+        <p class="pay-error" id="payError" hidden></p>
+        <p class="xfer-note">Havaleniz hesabımıza ulaşıp onaylandığında lisansınız etkinleştirilir ve
+          e-posta ile bilgilendirilirsiniz. Onay genellikle aynı iş günü içinde tamamlanır.</p>
 
-          <p class="pay-error" id="payError" hidden></p>
-          <p class="pay-test">Test kartı: <code>4242 4242 4242 4242</code> · ileri tarih · herhangi CVV</p>
-
-          <button type="submit" class="btn btn-primary btn-block btn-lg" id="paySubmit">
-            <span id="payBtnText">Güvenli Öde</span>
-          </button>
-          <p class="pay-secure">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-            256-bit SSL ile şifrelenmiş güvenli ödeme
-          </p>
-        </form>
+        <button type="button" class="btn btn-primary btn-block btn-lg" id="paySubmit">
+          <span id="payBtnText">Havaleyi Yaptım, Bildir</span>
+        </button>
       </div>
     </div>
   </div>

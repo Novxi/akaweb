@@ -14,10 +14,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-degistir';
 const CURRENCY = (process.env.CURRENCY || 'try').toLowerCase();
 const isProd = process.env.NODE_ENV === 'production';
 
-/* ---- Stripe (anahtar yoksa devre dışı) ---- */
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? require('stripe')(process.env.STRIPE_SECRET_KEY)
-  : null;
+/* ---- Havale / EFT bilgileri (kart ödemesi yerine IBAN'a transfer) ---- */
+const TRANSFER = {
+  iban: process.env.TRANSFER_IBAN || 'TR91 0001 0090 1096 4078 8050 01',
+  name: process.env.TRANSFER_NAME || 'Mert Kaya',
+  bank: process.env.TRANSFER_BANK || 'Ziraat Bankası',
+};
 
 /* Sunucu tarafında sabitlenmiş plan fiyatları (istemciye güvenilmez).
    Tutarlar para biriminin en küçük biriminde (kuruş). */
@@ -83,9 +85,8 @@ app.use(authOptional);
 /* ---------- public yapılandırma ---------- */
 app.get('/api/config', (_req, res) => {
   res.json({
-    stripeEnabled: !!stripe,
-    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '',
     currency: CURRENCY,
+    transfer: TRANSFER,
     plans: Object.fromEntries(
       Object.entries(PLANS).map(([k, v]) => [k, { name: v.name, amount: v.amount }])
     ),
@@ -197,12 +198,18 @@ app.put('/api/content', requireAuth, requireAdmin, async (req, res) => {
 app.get('/api/admin/customers', requireAuth, requireAdmin, async (_req, res) => {
   const { rows } = await db.query(
     `SELECT u.id, u.name, u.school, u.email, u.role, u.license_key, u.plan, u.status, u.created_at,
-            COALESCE(p.paid_total, 0) AS paid_total
+            COALESCE(p.paid_total, 0) AS paid_total,
+            pend.plan AS pending_plan, pend.created_at AS pending_at
      FROM site_users u
      LEFT JOIN (
        SELECT user_id, SUM(amount_cents) AS paid_total
        FROM payments WHERE status = 'paid' GROUP BY user_id
      ) p ON p.user_id = u.id
+     LEFT JOIN LATERAL (
+       SELECT plan, created_at FROM payments
+       WHERE user_id = u.id AND status = 'pending'
+       ORDER BY created_at DESC LIMIT 1
+     ) pend ON true
      WHERE u.role = 'customer'
      ORDER BY u.created_at DESC`
   );
@@ -220,12 +227,9 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, async (_req, res) => {
   });
 });
 
-/* ---------- ödeme: Stripe Checkout ---------- */
-function baseUrl(req) {
-  return process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-}
+/* ---------- ödeme: havale ile ---------- */
 
-/* Ödeme başarılı olduğunda hesabı etkinleştirir:
+/* Ödeme onaylandığında (admin) hesabı etkinleştirir:
    - yoksa lisans anahtarı üretir (varsa korunur, yenileme/yükseltmede aynı kalır)
    - planı ve durumu günceller
    - dahil hizmetleri (yoksa) oluşturup aktifleştirir */
@@ -248,126 +252,70 @@ async function activateAccount(userId, plan) {
   return licenseKey;
 }
 
-app.post('/api/checkout', requireAuth, async (req, res) => {
-  if (!stripe)
-    return res.status(503).json({
-      error: 'Ödeme sistemi henüz yapılandırılmamış. Lütfen yöneticinizle iletişime geçin.',
-    });
+/* Müşteri bir plan seçip havale bildirimi yapar → 'pending' ödeme kaydı oluşur.
+   Hesap, admin havaleyi onaylayana kadar 'pending' kalır. */
+app.post('/api/order', requireAuth, async (req, res) => {
   const { plan } = req.body || {};
   const p = PLANS[plan];
   if (!p) return res.status(400).json({ error: 'Geçersiz plan.' });
   try {
-    const { rows } = await db.query('SELECT * FROM site_users WHERE id = $1', [req.user.id]);
-    const user = rows[0];
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      customer_email: user.email,
-      line_items: [
-        {
-          quantity: 1,
-          price_data: {
-            currency: CURRENCY,
-            unit_amount: p.amount,
-            product_data: { name: p.name },
-          },
-        },
-      ],
-      success_url: `${baseUrl(req)}/panel.html?paid={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl(req)}/panel.html?canceled=1`,
-      metadata: { user_id: user.id, plan },
-    });
-    await db.query(
-      `INSERT INTO payments (user_id, provider, plan, amount_cents, currency, status, stripe_session_id)
-       VALUES ($1,'stripe',$2,$3,$4,'pending',$5)`,
-      [user.id, plan, p.amount, CURRENCY, session.id]
+    /* Aynı plan için zaten bekleyen bir bildirim varsa tekrar oluşturma. */
+    const existing = await db.query(
+      `SELECT id FROM payments WHERE user_id=$1 AND plan=$2 AND status='pending' LIMIT 1`,
+      [req.user.id, plan]
     );
-    res.json({ url: session.url });
-  } catch (err) {
-    console.error('checkout', err);
-    res.status(500).json({ error: 'Ödeme oturumu oluşturulamadı.' });
-  }
-});
-
-/* başarı dönüşünde ödemeyi doğrula ve hesabı aktifleştir */
-app.get('/api/checkout/verify', requireAuth, async (req, res) => {
-  if (!stripe) return res.status(503).json({ error: 'Ödeme sistemi yapılandırılmamış.' });
-  const sessionId = req.query.session_id;
-  if (!sessionId) return res.status(400).json({ error: 'session_id gerekli.' });
-  try {
-    const session = await stripe.checkout.sessions.retrieve(String(sessionId));
-    if (session.metadata.user_id !== req.user.id)
-      return res.status(403).json({ error: 'Bu ödeme size ait değil.' });
-
-    if (session.payment_status === 'paid') {
+    if (!existing.rows.length) {
       await db.query(
-        `UPDATE payments SET status='paid', paid_at=now()
-         WHERE stripe_session_id=$1 AND status<>'paid'`,
-        [session.id]
+        `INSERT INTO payments (user_id, provider, plan, amount_cents, currency, status)
+         VALUES ($1,'transfer',$2,$3,$4,'pending')`,
+        [req.user.id, plan, p.amount, CURRENCY]
       );
-      await activateAccount(req.user.id, session.metadata.plan);
-      return res.json({ ok: true, status: 'paid' });
     }
-    res.json({ ok: false, status: session.payment_status });
+    res.json({ ok: true, transfer: TRANSFER, amount_cents: p.amount, currency: CURRENCY, plan });
   } catch (err) {
-    console.error('verify', err);
-    res.status(500).json({ error: 'Ödeme doğrulanamadı.' });
+    console.error('order', err);
+    res.status(500).json({ error: 'Sipariş kaydedilemedi.' });
   }
 });
 
-/* ---------- ödeme: uygulama içi kart formu ----------
-   Not: PCI uyumu için ham kart numarası SAKLANMAZ; yalnızca doğrulanır ve
-   son 4 hane kayıt amacıyla tutulur. Gerçek tahsilat için bir ödeme
-   sağlayıcısının sunucu-taraflı tokenizasyonuna bağlanmalıdır. */
-function luhnValid(num) {
-  let sum = 0;
-  let alt = false;
-  for (let i = num.length - 1; i >= 0; i--) {
-    let d = parseInt(num[i], 10);
-    if (alt) {
-      d *= 2;
-      if (d > 9) d -= 9;
-    }
-    sum += d;
-    alt = !alt;
-  }
-  return num.length >= 13 && sum % 10 === 0;
-}
-
-app.post('/api/pay', requireAuth, async (req, res) => {
-  const { plan, number, exp, cvv } = req.body || {};
-  const p = PLANS[plan];
-  if (!p) return res.status(400).json({ error: 'Geçersiz plan.' });
-
-  const digits = String(number || '').replace(/\D/g, '');
-  if (!luhnValid(digits))
-    return res.status(400).json({ error: 'Kart numarası geçersiz.' });
-
-  const m = String(exp || '').match(/^(\d{2})\s*\/\s*(\d{2})$/);
-  if (!m) return res.status(400).json({ error: 'Son kullanma tarihi geçersiz (AA/YY).' });
-  const month = parseInt(m[1], 10);
-  const year = 2000 + parseInt(m[2], 10);
-  if (month < 1 || month > 12)
-    return res.status(400).json({ error: 'Son kullanma ayı geçersiz.' });
-  const now = new Date();
-  const endOfMonth = new Date(year, month, 1);
-  if (endOfMonth <= now)
-    return res.status(400).json({ error: 'Kartın süresi dolmuş.' });
-
-  if (!/^\d{3,4}$/.test(String(cvv || '')))
-    return res.status(400).json({ error: 'CVV geçersiz.' });
-
+/* ---------- admin: havale onayı / hesap aktifleştirme ---------- */
+app.post('/api/admin/customers/:id/activate', requireAuth, requireAdmin, async (req, res) => {
+  const userId = req.params.id;
   try {
-    const last4 = digits.slice(-4);
-    await db.query(
-      `INSERT INTO payments (user_id, provider, plan, amount_cents, currency, status, paid_at)
-       VALUES ($1,'card',$2,$3,$4,'paid',now())`,
-      [req.user.id, plan, p.amount, CURRENCY]
+    const u = await db.query("SELECT id FROM site_users WHERE id=$1 AND role='customer'", [userId]);
+    if (!u.rows.length) return res.status(404).json({ error: 'Müşteri bulunamadı.' });
+
+    /* İstenen plan; yoksa müşterinin en güncel bekleyen ödemesinin planı. */
+    let plan = (req.body && req.body.plan) || null;
+    let payId = null;
+    const pend = await db.query(
+      `SELECT id, plan FROM payments
+       WHERE user_id=$1 AND status='pending'
+       ORDER BY created_at DESC LIMIT 1`,
+      [userId]
     );
-    const licenseKey = await activateAccount(req.user.id, plan);
-    res.json({ ok: true, last4, plan, license_key: licenseKey });
+    if (pend.rows.length) {
+      payId = pend.rows[0].id;
+      if (!plan) plan = pend.rows[0].plan;
+    }
+    if (!plan || !PLANS[plan])
+      return res.status(400).json({ error: 'Onaylanacak geçerli bir plan/ödeme bulunamadı.' });
+
+    if (payId) {
+      await db.query(`UPDATE payments SET status='paid', paid_at=now() WHERE id=$1`, [payId]);
+    } else {
+      /* Bekleyen kayıt yoksa (ör. admin elle aktifleştiriyor) ödeme kaydı oluştur. */
+      await db.query(
+        `INSERT INTO payments (user_id, provider, plan, amount_cents, currency, status, paid_at)
+         VALUES ($1,'transfer',$2,$3,$4,'paid',now())`,
+        [userId, plan, PLANS[plan].amount, CURRENCY]
+      );
+    }
+    const licenseKey = await activateAccount(userId, plan);
+    res.json({ ok: true, plan, license_key: licenseKey });
   } catch (err) {
-    console.error('pay', err);
-    res.status(500).json({ error: 'Ödeme işlenemedi.' });
+    console.error('activate', err);
+    res.status(500).json({ error: 'Hesap aktifleştirilemedi.' });
   }
 });
 
@@ -379,7 +327,7 @@ db.init()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`✓ Akademia sunucusu çalışıyor → http://localhost:${PORT}`);
-      if (!stripe) console.log('! Stripe anahtarı yok — ödeme butonları devre dışı.');
+      console.log(`• Havale IBAN: ${TRANSFER.iban} (${TRANSFER.name} · ${TRANSFER.bank})`);
     });
   })
   .catch((err) => {
